@@ -27,6 +27,10 @@ import { gradeEntity } from './entities/grade.Entity';
 import { examtypeEntity } from './entities/examtype.Entity';
 import { classRoutineEntity } from './entities/classRoutine.entity';
 import { classRoutineDTO } from './dto/classRoutine.dto';
+import { examDTO } from './dto/exam.dto';
+import { examEntity } from './entities/exam.Entity';
+import { examRoutineEntity } from './entities/examRoutine.entity';
+import { ExamRoutineDTO } from './dto/examRoutine.dto';
 
 @Controller('administrator')
 export class AdministratorController {
@@ -209,6 +213,13 @@ export class AdministratorController {
       return await this.administratorService.addexamtype(examtype);
     }
 
+    //Add Exam
+    @Post("/addexam")
+    @UsePipes(new ValidationPipe())
+    async addExam(@Body() exam:examDTO):Promise<examEntity[]>{
+      return await this.administratorService.addExam(exam)
+    }
+
     //Add class routine
     @Post("/addclassroutine")
     @UsePipes(new ValidationPipe())
@@ -229,6 +240,26 @@ export class AdministratorController {
       classRoutine.CreatedDate = new Date();
 
       return await this.administratorService.addClassRoutine(classRoutine)
+    }
+
+    //Add exam routine
+    @Post("/addexamroutine")
+    @UsePipes(new ValidationPipe())
+    @UseInterceptors(FileInterceptor('examRoutineFile',{fileFilter:(req, file, cb)=>{
+      if(file.originalname.match(/^.*\.(pdf)$/)){
+        cb(null, true)
+      }else{
+        cb(new MulterError('LIMIT_UNEXPECTED_FILE', 'pdf'), false)
+      }
+    }, limits:{fileSize: 1000000}, storage: diskStorage({destination: './myFile/examRoutine', filename: function(req, file, cb){
+      cb(null, Date.now()+file.originalname)}})   
+    }))
+
+    async addexamRoutine(@Body() examRoutine:ExamRoutineDTO, @UploadedFile() file: Express.Multer.File):Promise<examRoutineEntity[]>{
+      examRoutine.File = file.filename
+      examRoutine.Date = new Date();
+
+      return await this.administratorService.addexamRoutine(examRoutine)
     }
 
 
