@@ -12,9 +12,11 @@ import { TeacherEntity } from './entities/Teacher.entity';
 import { StaffEntity } from './entities/Staff.entity';
 import { SubjectEntity } from './entities/Subject.entity';
 import { gradeEntity } from './entities/grade.Entity';
+import { examtypeEntity } from './entities/examtype.Entity';
+import { classRoutineEntity } from './entities/classRoutine.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([AdministratorEntity, classEntity, sectionEntity, StudentEntity, SchoolInfoEntity, DepartmentEntity, TeacherEntity, StaffEntity, SubjectEntity, gradeEntity])],
+  imports: [TypeOrmModule.forFeature([AdministratorEntity, classEntity, sectionEntity, StudentEntity, SchoolInfoEntity, DepartmentEntity, TeacherEntity, StaffEntity, SubjectEntity, gradeEntity, examtypeEntity, classRoutineEntity])],
   controllers: [AdministratorController],
   providers: [AdministratorService],
 })

@@ -19,6 +19,10 @@ import { SubjectEntity } from './entities/Subject.entity';
 import { gradeDTO } from './dto/grade.dto';
 import { gradeEntity } from './entities/grade.Entity';
 import { SubjectDTO } from './dto/Subject.dto';
+import { examtypeEntity } from './entities/examtype.Entity';
+import { examtypeDTO } from './dto/examtype.dto';
+import { classRoutineDTO } from './dto/classRoutine.dto';
+import { classRoutineEntity } from './entities/classRoutine.entity';
 
 
 @Injectable()
@@ -34,6 +38,8 @@ export class AdministratorService {
     @InjectRepository(StaffEntity) private StaffRepository: Repository<StaffEntity>,
     @InjectRepository(SubjectEntity) private SubjectRepository: Repository<SubjectEntity>,
     @InjectRepository(gradeEntity) private gradeRepository: Repository<gradeEntity>,
+    @InjectRepository(examtypeEntity) private examtypeRepository: Repository<examtypeEntity>,
+    @InjectRepository(classRoutineEntity) private classRoutineRepository: Repository<classRoutineEntity>,
   ) {}
 
   //School Information
@@ -200,9 +206,18 @@ export class AdministratorService {
 
   //add garde
   async addgrade(grade:gradeDTO):Promise<gradeEntity>{
-
-    console.log(grade)
     return await this.gradeRepository.save(grade)
+  }
+
+  //add Exam Type
+  async addexamtype(examtype:examtypeDTO):Promise<examtypeEntity>{
+    return await this.examtypeRepository.save(examtype)
+  }
+
+  //add Class Routine
+  async addClassRoutine(classRoutine:any):Promise<classRoutineEntity[]>{
+    console.log(classRoutine)
+    return await this.classRoutineRepository.save(classRoutine);
   }
 
   

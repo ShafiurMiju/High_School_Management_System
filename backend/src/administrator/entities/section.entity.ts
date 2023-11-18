@@ -1,5 +1,6 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { StudentEntity } from "./student.entity";
+import { classRoutineEntity } from "./classRoutine.entity";
 
 @Entity("section")
 export class sectionEntity{
@@ -11,4 +12,7 @@ export class sectionEntity{
 
     @OneToMany(() => StudentEntity, (student) => student.Section, {cascade:true})
     Students: StudentEntity[];
+
+    @OneToMany(() => classRoutineEntity, (classroutine) => classroutine.Section)
+    ClassRoutine: classRoutineEntity[]
 }
