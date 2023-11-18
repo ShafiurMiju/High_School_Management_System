@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UsePipes, ValidationPipe, UseInterceptors, UploadedFile, Res, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UsePipes, ValidationPipe, UseInterceptors, UploadedFile, Res, Query, UseGuards, Session, UnauthorizedException } from '@nestjs/common';
 import { AdministratorService } from './administrator.service';
 import { AdministratorLoginDTO } from './dto/AdministratorLogin.dto';
 import { AdministratorEntity } from './entities/administrator.entity';
@@ -31,6 +31,7 @@ import { examDTO } from './dto/exam.dto';
 import { examEntity } from './entities/exam.Entity';
 import { examRoutineEntity } from './entities/examRoutine.entity';
 import { ExamRoutineDTO } from './dto/examRoutine.dto';
+import { SessionGuard } from './session.guard';
 
 @Controller('administrator')
 export class AdministratorController {
@@ -58,12 +59,20 @@ export class AdministratorController {
   //Administrator Login
   @Get("/")
   @UsePipes(new ValidationPipe())
-  async login(@Body() loginData:AdministratorLoginDTO){
-    return await this.administratorService.login(loginData)
+  async login(@Session() session, @Body() loginData:AdministratorLoginDTO){
+    const logdata = await this.administratorService.login(loginData)
+    if(logdata == "Login Success"){
+      session.email = loginData.Email
+      return (session.email)
+    }
+    else{
+      throw new UnauthorizedException({ message: "invalid credentials" });
+    }
   }
 
   //Administrator Profile View
   @Get("/profile/:Id")
+  @UseGuards(SessionGuard)
   async profile(@Param("Id") Id:number):Promise<AdministratorEntity>{
     return this.administratorService.profile(Id)
   }
@@ -261,6 +270,5 @@ export class AdministratorController {
 
       return await this.administratorService.addexamRoutine(examRoutine)
     }
-
 
 }
