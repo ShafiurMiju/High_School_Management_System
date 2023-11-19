@@ -70,11 +70,36 @@ export class AdministratorController {
     }
   }
 
+  //Forget password
+  @Get("/forgetpass")
+  async forgetPass(@Session() session, @Body() email){
+    var ex = await this.administratorService.forgetPass(email);
+
+    if(ex == true){
+      session.temp = email.Email
+      return "Email found"
+    }
+    else{
+      throw new UnauthorizedException({ message: "invalid credentials" });
+    }
+  }
+
+  @Patch("/forgetpasschange")
+  async forgetPassChange(@Session() session, @Body() newpass){
+    if(newpass.Password == newpass.ConfirmPassword){
+      return await this.administratorService.forgetPassChange(session.temp, newpass)
+    }
+    else{
+      return "password not match"
+    }
+    
+  }
+
   //Administrator Profile View
-  @Get("/profile/:Id")
+  @Get("/profile")
   @UseGuards(SessionGuard)
-  async profile(@Param("Id") Id:number):Promise<AdministratorEntity>{
-    return this.administratorService.profile(Id)
+  async profile(@Session() session):Promise<AdministratorEntity>{
+    return this.administratorService.profile(session.email)
   }
 
   //Administrator password change
@@ -183,6 +208,14 @@ export class AdministratorController {
     return await this.administratorService.addTeacher(teacher);
   }
 
+  //All Teacher list
+  @Get("/viewteacher")
+  async viewTeacher(){
+    return await this.administratorService.viewTeacher()
+  }
+
+
+
   //Add Staff
   @Post("/addstaff")
   @UsePipes(new ValidationPipe())
@@ -215,60 +248,60 @@ export class AdministratorController {
     return await this.administratorService.addgrade(grade);
   }
 
-    //Add Exam Type 
-    @Post("/addexamtype")
-    @UsePipes(new ValidationPipe())
-    async addexamtype(@Body() examtype:any):Promise<examtypeEntity>{
-      return await this.administratorService.addexamtype(examtype);
+  //Add Exam Type 
+  @Post("/addexamtype")
+  @UsePipes(new ValidationPipe())
+  async addexamtype(@Body() examtype:any):Promise<examtypeEntity>{
+    return await this.administratorService.addexamtype(examtype);
+  }
+
+  //Add Exam
+  @Post("/addexam")
+  @UsePipes(new ValidationPipe())
+  async addExam(@Body() exam:examDTO):Promise<examEntity[]>{
+    return await this.administratorService.addExam(exam)
+  }
+
+  //Add class routine
+  @Post("/addclassroutine")
+  @UsePipes(new ValidationPipe())
+  @UseInterceptors(FileInterceptor('classRoutineFile',{fileFilter:(req, file, cb)=>{
+    if(file.originalname.match(/^.*\.(pdf)$/)){
+      cb(null, true)
+    }else{
+      cb(new MulterError('LIMIT_UNEXPECTED_FILE', 'image'), false)
     }
+  }, limits:{fileSize: 1000000}, storage: diskStorage({destination: './myFile/classRoutine', filename: function(req, file, cb){
+    cb(null, Date.now()+file.originalname)}})   
+  }))
 
-    //Add Exam
-    @Post("/addexam")
-    @UsePipes(new ValidationPipe())
-    async addExam(@Body() exam:examDTO):Promise<examEntity[]>{
-      return await this.administratorService.addExam(exam)
+  async addClassRoutine(@Body() classRoutine:classRoutineDTO, @UploadedFile() file: Express.Multer.File):Promise<classRoutineEntity[]>{
+    console.log(classRoutine)
+
+    classRoutine.File = file.filename
+    classRoutine.CreatedDate = new Date();
+
+    return await this.administratorService.addClassRoutine(classRoutine)
+  }
+
+  //Add exam routine
+  @Post("/addexamroutine")
+  @UsePipes(new ValidationPipe())
+  @UseInterceptors(FileInterceptor('examRoutineFile',{fileFilter:(req, file, cb)=>{
+    if(file.originalname.match(/^.*\.(pdf)$/)){
+      cb(null, true)
+    }else{
+      cb(new MulterError('LIMIT_UNEXPECTED_FILE', 'pdf'), false)
     }
+  }, limits:{fileSize: 1000000}, storage: diskStorage({destination: './myFile/examRoutine', filename: function(req, file, cb){
+    cb(null, Date.now()+file.originalname)}})   
+  }))
 
-    //Add class routine
-    @Post("/addclassroutine")
-    @UsePipes(new ValidationPipe())
-    @UseInterceptors(FileInterceptor('classRoutineFile',{fileFilter:(req, file, cb)=>{
-      if(file.originalname.match(/^.*\.(pdf)$/)){
-        cb(null, true)
-      }else{
-        cb(new MulterError('LIMIT_UNEXPECTED_FILE', 'image'), false)
-      }
-    }, limits:{fileSize: 1000000}, storage: diskStorage({destination: './myFile/classRoutine', filename: function(req, file, cb){
-      cb(null, Date.now()+file.originalname)}})   
-    }))
+  async addexamRoutine(@Body() examRoutine:ExamRoutineDTO, @UploadedFile() file: Express.Multer.File):Promise<examRoutineEntity[]>{
+    examRoutine.File = file.filename
+    examRoutine.Date = new Date();
 
-    async addClassRoutine(@Body() classRoutine:classRoutineDTO, @UploadedFile() file: Express.Multer.File):Promise<classRoutineEntity[]>{
-      console.log(classRoutine)
-
-      classRoutine.File = file.filename
-      classRoutine.CreatedDate = new Date();
-
-      return await this.administratorService.addClassRoutine(classRoutine)
-    }
-
-    //Add exam routine
-    @Post("/addexamroutine")
-    @UsePipes(new ValidationPipe())
-    @UseInterceptors(FileInterceptor('examRoutineFile',{fileFilter:(req, file, cb)=>{
-      if(file.originalname.match(/^.*\.(pdf)$/)){
-        cb(null, true)
-      }else{
-        cb(new MulterError('LIMIT_UNEXPECTED_FILE', 'pdf'), false)
-      }
-    }, limits:{fileSize: 1000000}, storage: diskStorage({destination: './myFile/examRoutine', filename: function(req, file, cb){
-      cb(null, Date.now()+file.originalname)}})   
-    }))
-
-    async addexamRoutine(@Body() examRoutine:ExamRoutineDTO, @UploadedFile() file: Express.Multer.File):Promise<examRoutineEntity[]>{
-      examRoutine.File = file.filename
-      examRoutine.Date = new Date();
-
-      return await this.administratorService.addexamRoutine(examRoutine)
-    }
+    return await this.administratorService.addexamRoutine(examRoutine)
+  }
 
 }

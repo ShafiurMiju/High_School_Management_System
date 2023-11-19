@@ -69,8 +69,41 @@ export class AdministratorService {
     }
   }
 
+  //Forget Password
+  async forgetPass(email){
+    console.log(email)
+    const ex = await this.AdministratorRepository.findOne({
+      where:{
+        Email:email.Email
+      }
+    })
+    if(ex!=null){
+      return true
+    }
+    else{
+      return false
+    }
+  }
+
+  async forgetPassChange(email, newpass){
+    console.log(email)
+    console.log(newpass.Password)
+
+    const ex = await this.AdministratorRepository.findOne({
+      where:{
+        Email:email
+      }
+    })
+
+    console.log(ex)
+
+    ex.Password = newpass.Password;
+
+    return await this.AdministratorRepository.update(ex.ID, ex)
+  }
+
   //Administrator Profile View
-  async profile(Id:number):Promise<any>{
+  async profile(email: string):Promise<any>{
     try{
       const data = await this.AdministratorRepository.findOne({
         select:{
@@ -83,7 +116,7 @@ export class AdministratorService {
           Address: true
         },
         where:{
-          ID:Id
+          Email:email
         }
       })
 
@@ -131,8 +164,6 @@ export class AdministratorService {
   async deleteSection(Id:number){
     return await this.SectionRepository.delete(Id)
   }
-
-  
 
   //Add a Student
   async addStudent(student:StudentDTO):Promise<StudentEntity[]>{
@@ -198,6 +229,15 @@ export class AdministratorService {
       }
     })
   } 
+
+  //All Teacher list View
+  async viewTeacher(){
+    return await this.TeacherRepository.find({
+      relations:{
+         TeacherDepartment: true
+      }
+    })
+  }
 
   //Add a Staff
   async addStaff(staff:any):Promise<StaffEntity>{
