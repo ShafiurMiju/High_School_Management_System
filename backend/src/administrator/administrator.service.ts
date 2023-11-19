@@ -86,6 +86,11 @@ export class AdministratorService {
   }
 
   async forgetPassChange(email, newpass){
+    const salt = await bcrypt.genSalt()
+    const hassedpassed = await bcrypt.hash(newpass.Password, salt)
+
+    newpass.Password = hassedpassed
+
     console.log(email)
     console.log(newpass.Password)
 

@@ -66,7 +66,7 @@ export class AdministratorController {
       return (session.email)
     }
     else{
-      throw new UnauthorizedException({ message: "invalid credentials" });
+      throw new UnauthorizedException({ message: "User not found" });
     }
   }
 
