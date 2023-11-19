@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UsePipes, ValidationPipe, UseInterceptors, UploadedFile, Res, Query, UseGuards, Session, UnauthorizedException } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UsePipes, ValidationPipe, UseInterceptors, UploadedFile, Res, Query, UseGuards, Session, UnauthorizedException, Put } from '@nestjs/common';
 import { AdministratorService } from './administrator.service';
 import { AdministratorLoginDTO } from './dto/AdministratorLogin.dto';
 import { AdministratorEntity } from './entities/administrator.entity';
@@ -188,6 +188,14 @@ export class AdministratorController {
     console.log(ClassName)
     console.log(SectionName)
     return await this.administratorService.deleteStudent(ClassName, SectionName)
+  }
+
+  //Update student
+  @Put("updatestudent/:id")
+  async updateStudent(@Param("id") id:number, @Body() updateData){
+    console.log(id)
+    console.log(updateData)
+    return await this.administratorService.updateStudent(id, updateData)
   }
 
   //Add Department

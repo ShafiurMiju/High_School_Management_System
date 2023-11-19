@@ -236,6 +236,13 @@ export class AdministratorService {
     });
   }
 
+  //Update Student
+  async updateStudent(id:number, updateData){
+    console.log(id)
+    console.log(updateData)
+    return this.StudentRepository.update(id, updateData)
+  }
+
 
   //Add Department
   async addDepartment(department:any):Promise<DepartmentEntity[]>{
