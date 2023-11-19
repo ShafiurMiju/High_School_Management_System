@@ -2,6 +2,7 @@ import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "ty
 import { examtypeEntity } from "./examtype.Entity";
 import { classEntity } from "./class.entity";
 import { examRoutineEntity } from "./examRoutine.entity";
+import { resultEntity } from "./result.entity";
 
 @Entity("Exam")
 export class examEntity{
@@ -19,5 +20,8 @@ export class examEntity{
 
     @OneToMany(() => examRoutineEntity, (examRoutine) => examRoutine.Exam)
     ExamRoutines: examRoutineEntity[];
+
+    @OneToMany(() => resultEntity, (result) => result.Exam)
+    Results: resultEntity[];
 
 }

@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { resultEntity } from "./result.entity";
 
 @Entity("Grade")
 export class gradeEntity{
@@ -8,7 +9,8 @@ export class gradeEntity{
     @Column()
     GradeName: string;
     
-    // OneToMany(() => resultEntity, (grade) => grade.Grade)
-    // Grade: resultEntity;
+    @OneToMany(() => resultEntity, (result) => result.Grade)
+    Results: resultEntity[];
+
 
 }
