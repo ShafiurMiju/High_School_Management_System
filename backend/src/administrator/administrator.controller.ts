@@ -106,6 +106,7 @@ export class AdministratorController {
   @Patch("/passwordchange/:Id")
   @UsePipes(new ValidationPipe())
   async passwordChange(@Param("Id") Id:number, @Body() newPass:AdministratorPassChangeDTO){
+    console.log(newPass)
     return await this.administratorService.passwordChange(Id, newPass)
   }
 
@@ -179,6 +180,14 @@ export class AdministratorController {
   @Get("/viewStudentByClass")
   async viewStudentByClass(@Body() className:any){
     return await this.administratorService.viewStudentByClass(className)
+  }
+
+  //All Student list View by Class and Section
+  @Get("/student")
+  async deleteStudent(@Query("Class") ClassName:any, @Query("Section") SectionName:any){
+    console.log(ClassName)
+    console.log(SectionName)
+    return await this.administratorService.deleteStudent(ClassName, SectionName)
   }
 
   //Add Department

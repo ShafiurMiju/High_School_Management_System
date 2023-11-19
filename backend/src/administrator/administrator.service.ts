@@ -132,6 +132,14 @@ export class AdministratorService {
 
   //Administrator password change
   async passwordChange(Id:number, newPass:AdministratorPassChangeDTO){
+
+    const salt = await bcrypt.genSalt()
+    const hassedpassed = await bcrypt.hash(newPass.Password, salt)
+
+    newPass.Password = hassedpassed
+
+    console.log(newPass)
+
     return await this.AdministratorRepository.update(Id, newPass)
   }
 
@@ -150,7 +158,7 @@ export class AdministratorService {
     return await this.ClassRepository.delete(Id)
   }
 
-    //Add Section
+  //Add Section
   async addSection(sectionData:sectionDTO):Promise<sectionEntity>{
     return await this.SectionRepository.save(sectionData)
   }
@@ -205,6 +213,22 @@ export class AdministratorService {
         Class: className
       }
     })
+  }
+
+  //All Student list View by Class and Section
+  async deleteStudent(ClassName:any, SectionName:any){
+    console.log(ClassName)
+    console.log(SectionName)
+    return await this.StudentRepository.find({
+      relations:{
+        Class:true,
+        Section:true
+      },
+      where:{
+        Class: {ClassName: ClassName},
+        Section:{SectionName: SectionName}
+      }
+    });
   }
 
 
