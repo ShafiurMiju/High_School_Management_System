@@ -198,6 +198,26 @@ export class AdministratorController {
     return await this.administratorService.updateStudent(id, updateData)
   }
 
+  //Student Photo Upload
+  @Patch("updatephoto/:id")
+  @UseInterceptors(FileInterceptor('myfile',{fileFilter:(req, file, cb)=>{
+    if(file.originalname.match(/^.*\.(jpg|webp|png|jepg)$/)){
+      cb(null, true)
+    }else{
+      cb(new MulterError('LIMIT_UNEXPECTED_FILE', 'image'), false)
+    }
+  }, limits:{fileSize: 300000}, storage: diskStorage({destination: './uploadFile', filename: function(req, file, cb){
+    cb(null, Date.now()+file.originalname)}})   
+  }))
+
+  async updatePhoto(@Param("id") id:number, @Body() updateData, @UploadedFile() file: Express.Multer.File){
+    updateData.ProfilePicture = file.filename
+    console.log(id)
+    console.log(updateData)
+    return await this.administratorService.updatePhoto(id, updateData)
+  }
+  
+
   //Add Department
   @Post("/addDepartment")
   @UsePipes(new ValidationPipe())

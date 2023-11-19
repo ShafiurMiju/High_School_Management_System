@@ -243,6 +243,13 @@ export class AdministratorService {
     return this.StudentRepository.update(id, updateData)
   }
 
+  //Update Student Photo
+  async updatePhoto(id:number, updateData){
+    console.log(id)
+    console.log(updateData)
+    return this.StudentRepository.update(id, updateData)
+  }
+
 
   //Add Department
   async addDepartment(department:any):Promise<DepartmentEntity[]>{
