@@ -7,7 +7,7 @@ import { gradeEntity } from "./grade.Entity";
 @Entity("Result")
 export class resultEntity{
     @PrimaryGeneratedColumn()
-    ResultID: number;
+    ID: number;
 
     @Column()
     MarksObtained: number;

@@ -1,5 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany } from 'typeorm';
 import { DepartmentEntity } from './Department.entity';
+import { SubjectTeacherEntity } from './subjectTeacher.entity';
 
 @Entity("Teacher")
 export class TeacherEntity {
@@ -42,8 +43,8 @@ export class TeacherEntity {
 //   @OneToMany(() => Notice, (notice) => notice.Teacher)
 //   Notices: Notice[];
 
-//   @OneToMany(() => SubjectTeacher, (subjectTeacher) => subjectTeacher.Teacher)
-//   SubjectTeachers: SubjectTeacher[];
+  @OneToMany(() => SubjectTeacherEntity, (subjectTeacher) => subjectTeacher.Teacher)
+  STeachers: SubjectTeacherEntity[];
 
 //   @OneToMany(() => TeacherStudentChat, (teacherStudentChat) => teacherStudentChat.Teacher)
 //   TeacherStudentChats: TeacherStudentChat[];

@@ -1,5 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
 import { resultEntity } from './result.entity';
+import { SubjectTeacherEntity } from './subjectTeacher.entity';
 
 @Entity("Subject")
 export class SubjectEntity {
@@ -12,6 +13,6 @@ export class SubjectEntity {
   @OneToMany(() => resultEntity, (result) => result.Subject)
   Results: resultEntity[];
 
-//   @OneToMany(() => SubjectTeacher, (subjectTeacher) => subjectTeacher.Subject)
-//   SubjectTeachers: SubjectTeacher[];
+  @OneToMany(() => SubjectTeacherEntity, (subjectTeacher) => subjectTeacher.Subject)
+  STeachers: SubjectTeacherEntity[];
 }

@@ -3,6 +3,7 @@ import { StudentEntity } from "./student.entity";
 import { classRoutineEntity } from "./classRoutine.entity";
 import { examEntity } from "./exam.Entity";
 import { examRoutineEntity } from "./examRoutine.entity";
+import { SubjectTeacherEntity } from "./subjectTeacher.entity";
 
 @Entity("class")
 export class classEntity{
@@ -23,4 +24,7 @@ export class classEntity{
 
     @OneToMany(() => examRoutineEntity, (examRoutine) => examRoutine.Class)
     ExamRoutines: examRoutineEntity[];
+
+    @OneToMany(() => SubjectTeacherEntity, (subjectTeacher) => subjectTeacher.Class)
+    STeachers: SubjectTeacherEntity[];
 }
